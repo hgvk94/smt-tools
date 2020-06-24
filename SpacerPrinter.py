@@ -1,8 +1,8 @@
 from pysmt.printers import HRPrinter
 from pysmt.utils import quote
-from pysmt.shortcuts import Or
+from pysmt.shortcuts import Or, get_formula_size, Equals
 def sort_key(l):
-    return len(l.args())
+    return get_formula_size(l)
 
 def sort_pysmt_form(l):
     return sorted(l, key=sort_key)

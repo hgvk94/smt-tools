@@ -27,6 +27,20 @@ class SpacerPrinter(HRPrinter):
     def walk_and(self, formula):
         return self.walk_nary_with_nl(formula, "& ")
 
+    def walk_equals(self, formula):
+        args = formula.args()
+        f = args[0]
+        rhs = args[1]
+        f_args = f.args()
+        if f.is_plus() and len(f_args) == 2:
+            rhs_zero = rhs.is_real_constant(0)
+            s_arg = f_args[1]
+            is_mone = s_arg.is_times() and s_arg.args()[0].is_real_constant(-1)
+            if rhs_zero and is_mone:
+                nw_eq = Equals(f_args[0], s_arg.args()[1])
+                return HRPrinter.walk_equals(self, nw_eq)
+        return HRPrinter.walk_equals(self, formula)
+
     def walk_or(self, formula):
         args = sort_pysmt_form(formula.args())
         nw_or = Or(args)
